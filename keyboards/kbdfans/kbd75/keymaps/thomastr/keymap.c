@@ -1,5 +1,6 @@
 #include QMK_KEYBOARD_H
 #include <print.h>
+#include "sendstring_german.h"
 
 /*
 Changes:
@@ -42,7 +43,12 @@ N - Cycle through backlight levels
 
 enum custom_keycodes {
   LED_PWR_OFF = SAFE_RANGE,
-  LED_PWR_ON
+  LED_PWR_ON,
+  ARROW_LEFT,
+  BSLASH,
+  TS_EQUAL,
+  TS_NEQUAL,
+  AND
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -59,7 +65,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         backlight_disable();
         rgblight_disable();
       } 
-      break;
+    break;
 
     /* Switch RGB & backlight on, press return to wake mac up from sleep */
     case LED_PWR_ON:
@@ -70,7 +76,42 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         backlight_enable();
         rgblight_enable();
       } 
-      break;
+    break;
+
+    /* Type minus & arrow left: -> */
+    case ARROW_LEFT:
+      if (record->event.pressed) {
+        SEND_STRING("->");
+      } 
+    break;
+
+    /* Type backslash: \ */
+    case BSLASH:
+      if (record->event.pressed) {
+        SEND_STRING(SS_RALT(SS_RSFT("7")));
+      } 
+    break;
+
+    /* Type save equal: === */
+    case TS_EQUAL:
+      if (record->event.pressed) {
+        SEND_STRING(SS_RSFT("000"));
+      } 
+    break;    
+
+    /* Type save not equal: !== */
+    case TS_NEQUAL:
+      if (record->event.pressed) {
+        SEND_STRING(SS_RSFT("100"));
+      } 
+    break;  
+
+    /* Type save not equal: !== */
+    case AND:
+      if (record->event.pressed) {
+        SEND_STRING(SS_RSFT("66"));
+      } 
+    break;  
 
   }
   return true;
@@ -89,10 +130,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 	[1] = LAYOUT(
     _______,        _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  KC__MUTE, KC__VOLDOWN, KC__VOLUP, LED_PWR_ON, _______,     LED_PWR_OFF,
-    _______,        _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,     _______,   _______,    RESET,       _______,
+    _______,        TS_NEQUAL,_______,  _______,  _______,  _______,  AND,      BSLASH,   _______,  _______,  TS_EQUAL, _______,     _______,   _______,    RESET,       _______,
     _______,        RGB_TOG,  RGB_MOD,  RGB_HUI,  RGB_HUD,  RGB_SAI,  RGB_SAD,  RGB_VAI,  RGB_VAD,  _______,  _______,  _______,     _______,   _______,                 _______,
     _______,        _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,  _______,                            _______,     _______,
-    _______,        _______,  _______,  _______,  BL_DEC,   BL_TOGG,  BL_INC,   BL_STEP,  _______,  _______,  _______,  _______,     _______,               LED_PWR_ON,  _______,
+    _______,        _______,  _______,  _______,  BL_DEC,   BL_TOGG,  BL_INC,   BL_STEP,  _______,  _______,  _______,  ARROW_LEFT,     _______,               LED_PWR_ON,  _______,
     _______,        _______,  _______,                      _______,  _______,  _______,                      _______,  _______,     _______,   _______,    LED_PWR_OFF, _______
   )
 
